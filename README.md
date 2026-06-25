@@ -1,6 +1,13 @@
-# NetworkProgramming_FinalProject_Group3
 # 🟩 Wordle Multiplayer
 **Network Programming Final Project — Group 4**
+
+---
+
+## Overview
+
+Wordle Multiplayer is a real-time multiplayer word guessing game developed using Python socket programming. The game allows multiple players to create or join a room, compete through several rounds, communicate using an in-game chat, and monitor each player's progress in real time.
+
+This project demonstrates the implementation of core concepts from the Network Programming course, including TCP communication, UDP broadcasting, multithreading, socket multiplexing with `select()`, and JSON object serialization.
 
 ---
 
@@ -16,14 +23,91 @@
 
 ---
 
-## How to Run
+## Features
 
-### Install dependencies
+- Multiplayer Wordle gameplay
+- Create and join private game rooms
+- Multiple difficulty levels: Easy, Normal, and Hard
+- Real-time player status updates using UDP
+- In-game chat using TCP
+- Automatic score calculation and leaderboard
+- Multiple game rounds with countdown timer
+- Automatic host transfer when the host disconnects
+- Interactive Pygame graphical interface
+
+---
+
+## Network Architecture
+
+```text
+                    TCP Communication
+        +-----------+           +-----------+
+        | Client 1  | --------> |           |
+        +-----------+           |           |
+                                |           |
+        +-----------+ --------> |  Server   |
+        | Client 2  |           |           |
+        +-----------+           |           |
+                                |           |
+        +-----------+ --------> |           |
+        | Client 3  |           |
+        +-----------+           +-----------+
+
+                  UDP Broadcast
+          Server -----------------------> All Clients
+           (Live Player Status Updates)
+```
+
+---
+
+## Communication Protocol
+
+The application uses two different communication protocols depending on the type of data being transmitted.
+
+### TCP
+
+TCP is used for all critical game communication that requires reliable and ordered delivery.
+
+Examples:
+- User login
+- Create room
+- Join room
+- Start game
+- Guess submission
+- Chat messages
+- Round results
+- Leaderboard
+
+### UDP
+
+UDP is used for lightweight real-time updates where low latency is more important than guaranteed delivery.
+
+Examples:
+- Live player status updates
+- Current attempts
+- Player progress
+
+UDP is suitable for player status updates because missing one update does not break the game. The next update can still refresh the client display.
+
+---
+
+## Requirements
+
+- Python 3.10 or later
+- pygame
+
+Install the required dependency:
+
 ```bash
 pip install pygame
 ```
 
+---
+
+## How to Run
+
 ### Single Laptop
+
 ```bash
 # Terminal 1 — start server
 python -m server.server
@@ -33,6 +117,7 @@ python -m client.gui
 ```
 
 ### Different Laptops (same WiFi/hotspot)
+
 ```bash
 # Server laptop
 python -m server.server --host 0.0.0.0
@@ -41,28 +126,72 @@ python -m server.server --host 0.0.0.0
 python -m client.gui --host 192.168.x.x
 ```
 
-> To find the server's IP on Windows: run `ipconfig` and look for **IPv4 Address**
+> To find the server's IP on Windows: run `ipconfig` and look for **IPv4 Address**.
+
+---
+
+## Default Ports
+
+| Protocol | Port | Usage |
+|---|---:|---|
+| TCP | 5000 | Main game communication |
+| UDP | 5001 | Live player status updates |
 
 ---
 
 ## File Structure
 
-```
+```text
 wordle_v2/
 ├── server/
-│   ├── server.py          → Main TCP server
-│   └── room_manager.py    → Room & game loop
+│   ├── server.py          → Main TCP/UDP server
+│   └── room_manager.py    → Room management and game loop
 ├── client/
 │   ├── gui.py             → Pygame GUI
-│   └── network.py         → Network handler
+│   └── network.py         → TCP & UDP client handler
 ├── shared/
-│   ├── protocol.py        → JSON message format
-│   └── game_logic.py      → Game logic
+│   ├── protocol.py        → Shared JSON message format
+│   └── game_logic.py      → Word validation, feedback, and scoring
 └── words/
-    ├── easy.txt            → 4-letter words
-    ├── normal.txt          → 5-letter words
-    └── hard.txt            → 6-letter words
+    ├── easy.txt           → 4-letter words
+    ├── normal.txt         → 5-letter words
+    └── hard.txt           → 6-letter words
 ```
+
+---
+
+## Gameplay Flow
+
+```text
+Create Room / Join Room
+          │
+          ▼
+      Lobby Waiting
+          │
+          ▼
+      Host Starts Game
+          │
+          ▼
+       Round Begins
+          │
+          ▼
+     Players Guess Words
+          │
+          ▼
+      Round Ends
+          │
+          ▼
+    Next Round / Game End
+          │
+          ▼
+      Final Leaderboard
+```
+
+---
+
+## Project Components
+
+The project is divided into several modules. Each module is responsible for a specific part of the system, including networking, game management, game logic, and graphical user interface.
 
 ---
 
@@ -471,3 +600,12 @@ Chat is implemented over TCP — the client sends a message to the server, and t
 | **Chat** | Lecture 06 | server.py, gui.py | In-game chat broadcast to all clients in the room |
 | **UDP** | Lecture 07 | server.py, network.py | Real-time live player status broadcast to all clients |
 | **Object Serialization** | — | protocol.py | All messages encoded/decoded as JSON |
+
+
+---
+
+## Conclusion
+
+This project successfully implements a multiplayer Wordle game using Python socket programming. It integrates reliable TCP communication for game logic, lightweight UDP broadcasting for real-time player updates, multithreading for concurrent execution, `select()` for monitoring TCP and UDP sockets, and JSON serialization for structured message exchange.
+
+Overall, the project demonstrates the practical application of the networking concepts studied throughout the Network Programming course in the form of an interactive multiplayer game.
