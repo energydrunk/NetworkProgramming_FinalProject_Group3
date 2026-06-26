@@ -1,4 +1,4 @@
-# 🟩 Wordle Multiplayer
+# Wordle Multiplayer
 **Network Programming Final Project — Group 4**
 
 ---
@@ -198,7 +198,6 @@ The project is divided into several modules. Each module is responsible for a sp
 ## Code Explanation
 
 ### 1. `shared/protocol.py`
-**PIC: Adelia**
 
 This file acts as the "shared language" between the server and all clients. Every message sent over the network uses the JSON format defined here.
 
@@ -252,7 +251,6 @@ DIFFICULTY = {
 ---
 
 ### 2. `shared/game_logic.py`
-**PIC: Adelia**
 
 Contains all game logic used by the server: loading words, validating guesses, generating tile feedback, and calculating scores.
 
@@ -303,7 +301,6 @@ Sorts scores in descending order and adds a `rank` field to each entry.
 ---
 
 ### 3. `server/server.py`
-**PIC: Nuha**
 
 The server entry point. Manages incoming connections and coordinates TCP + UDP communication using `select()`.
 
@@ -372,7 +369,6 @@ If the host disconnects, the next player in the list automatically becomes the n
 ---
 
 ### 4. `server/room_manager.py`
-**PIC: Nuha**
 
 Manages all active rooms and runs the game loop for each room.
 
@@ -456,7 +452,6 @@ Sent via UDP every time a player submits a guess, so all clients can update thei
 ---
 
 ### 5. `client/network.py`
-**PIC: Almira**
 
 Handles all network communication on the client side. Two listener threads (TCP + UDP) run in parallel in the background.
 
@@ -508,7 +503,6 @@ Receives UDP broadcasts from the server (player status updates). The 1-second ti
 ---
 
 ### 6. `client/gui.py`
-**PIC: Embun**
 
 The full Pygame GUI. Uses a state machine to manage which screen is currently displayed.
 
